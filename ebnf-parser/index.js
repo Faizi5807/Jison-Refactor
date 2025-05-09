@@ -1,17 +1,17 @@
-const bnf = require('./parserr').parser;
-const ebnf = require('./ebnf-transform');
-const jisonlex = require('lex-parser');
-const fs = require('fs');
-const path = require('path');
+const bnf = require("./parser").parser;
+const ebnf = require("./ebnf-transform");
+const jisonlex = require("lex-parser");
+const fs = require("fs");
+const path = require("path");
 
 // CLI Entry Point
 function main() {
   const [, , file] = process.argv;
   if (!file) {
-    console.error('Usage: node index.js <file>');
+    console.error("Usage: node index.js <file>");
     process.exit(1);
   }
-  const source = fs.readFileSync(path.resolve(file), 'utf8');
+  const source = fs.readFileSync(path.resolve(file), "utf8");
   const parser = new bnf.yy.Parser({ ebnf: true });
   const result = parser.parse(source);
   console.log(result);
@@ -29,7 +29,7 @@ exports.parse = function parse(grammar) {
 exports.transform = ebnf.transform;
 
 // Adds a declaration to the grammar
-bnf.yy.addDeclaration = (grammar, decl) =>  {
+bnf.yy.addDeclaration = (grammar, decl) => {
   if (decl.start) {
     grammar.start = decl.start;
   } else if (decl.lex) {
@@ -41,7 +41,7 @@ bnf.yy.addDeclaration = (grammar, decl) =>  {
     if (!grammar.parseParams) grammar.parseParams = [];
     grammar.parseParams = grammar.parseParams.concat(decl.parseParam);
   } else if (decl.include) {
-    if (!grammar.moduleInclude) grammar.moduleInclude = '';
+    if (!grammar.moduleInclude) grammar.moduleInclude = "";
     grammar.moduleInclude += decl.include;
   } else if (decl.options) {
     if (!grammar.options) grammar.options = {};
@@ -53,5 +53,5 @@ bnf.yy.addDeclaration = (grammar, decl) =>  {
 
 // Parse an embedded lex section
 function parseLex(text) {
-  return jisonlex.parse(text.replace(/(?:^%lex)|(?:\/lex$)/g, ''));
+  return jisonlex.parse(text.replace(/(?:^%lex)|(?:\/lex$)/g, ""));
 }
